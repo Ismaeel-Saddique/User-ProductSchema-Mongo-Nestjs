@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString, IsNumber, IsMongoId } from 'class-validator';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -14,7 +14,5 @@ export class CreateProductDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsMongoId()
-  userId?: Types.ObjectId;
+  userId: Types.ObjectId; 
 }

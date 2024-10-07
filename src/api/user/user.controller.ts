@@ -23,9 +23,9 @@ export class UserController {
     @Post('refresh/:id')
     async refreshtokens(
         @Param('id') id: string,
-        @Body('refreshtoken', new ValidationPipe()) refreshtoken: string) {
+        @Body('refreshToken', new ValidationPipe()) refreshToken: string) {
         try {
-            return await this.userservice.refreshtoken(id, refreshtoken);
+            return await this.userservice.refreshtoken(id, refreshToken);
         }
         catch (error) {
             throw new UnauthorizedException('Inavalid Refresh Token');

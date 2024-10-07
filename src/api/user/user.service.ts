@@ -21,12 +21,12 @@ export class UserService {
     }
 
     async login(createuserdto: CreateUserDto) {
-        const { username, password } = createuserdto;
+        const { username, password} = createuserdto;
         const user = await this.usermodel.findOne({ username })
         if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const payload = { username };
+        const payload = { username, userId: user._id  };
         const accessToken = await this.jwtService.signAsync(payload);
         const refreshToken = await this.jwtService.signAsync(payload, { expiresIn: '7d' });
         const hashedrefreshtoken = await bcrypt.hash(refreshToken, 10);
@@ -43,7 +43,7 @@ export class UserService {
         if (!isRefreshTokenValid) {
             throw new UnauthorizedException('Not Compared');
         }
-        const payload = { username: user.username };
+        const payload = { username: user.username, userId: user._id  };
         const newAccessToken = await this.jwtService.signAsync(payload);
         const newRefreshToken = await this.jwtService.signAsync(payload, { expiresIn: '7d' });
         const newHashedtoken = await bcrypt.hash(newRefreshToken, 10);

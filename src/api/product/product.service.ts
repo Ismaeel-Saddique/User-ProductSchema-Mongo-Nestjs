@@ -1,6 +1,6 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { CreateProductDto } from 'src/dto/createproduct.dto';
 import { UpdateProductDto } from 'src/dto/updateproduct.dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
@@ -13,7 +13,6 @@ export class ProductService {
 
     async createproduct(createproductdto: CreateProductDto) {
         const { userId } = createproductdto
-        const objectIdUserId = new mongoose.Types.ObjectId(userId);
         const user = await this.usermodel.findById(userId)
         if (!user) throw new NotFoundException(`User with ID ${userId} not found`)
         const product = new this.productmodel(createproductdto);
@@ -50,15 +49,22 @@ export class ProductService {
         return product;
     }
 
-    async deleteproduct(productid: string) {
-        if (!mongoose.isValidObjectId(productid)) {
+    async deleteProduct(productId: string) {
+        if (!mongoose.isValidObjectId(productId)) {
             throw new NotFoundException('Invalid Product ID');
         }
-        const product = this.usermodel.findByIdAndDelete(productid)
-        if(!product){
-            throw new NotFoundException("There is no user corresponds to this id");
-         }
+        const product = await this.productmodel.findByIdAndDelete(productId);
+        if (!product) {
+            throw new NotFoundException("There is no product corresponding to this ID");
+        }
+    
+        return { message: 'Product successfully deleted' };
     }
-   
+
+    async getProductsByUserId(userId: string): Promise<Product[]> {
+        const objectIdUserId = new Types.ObjectId(userId);
+        const products = await this.productmodel.find({ userId: objectIdUserId }).lean().exec();
+        return products
+    }
 }
 

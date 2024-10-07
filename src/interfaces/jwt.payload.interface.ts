@@ -1,3 +1,4 @@
 export class JwtPayLoad{
-    userid: string;
+    userId: string;
+    username: string;
 }
