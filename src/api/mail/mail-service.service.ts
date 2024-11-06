@@ -34,4 +34,15 @@ export class MailService {
 
         await this.transporter.sendMail(mailOptions);
     }
+
+    async sendEmail(to: string, subject: string, html: string): Promise<void> {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to,
+            subject,
+            html,
+        };
+
+        await this.transporter.sendMail(mailOptions);
+    }
 }

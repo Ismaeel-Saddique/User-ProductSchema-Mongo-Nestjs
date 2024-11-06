@@ -12,23 +12,17 @@ import { RequestWithUser } from 'src/interfaces/requestwithuser.interface';
 @Controller('product')
 export class ProductController {
     constructor(private readonly productservice: ProductService) { }
-
     
-    @Post('create/:userId')
-    async createproduct(@Param('userId') userId: string, @Body(new ValidationPipe()) createproductdto: CreateProductDto) {
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new BadRequestException('Invalid userId format');
-        }
-        createproductdto.userId = new mongoose.Types.ObjectId(userId);  
-        return await this.productservice.createproduct(createproductdto);
+    @Post('create')
+    async createproduct(@Request() req: RequestWithUser, @Body(new ValidationPipe()) createproductdto: CreateProductDto) {
+        const userId = req.user.id;
+        return await this.productservice.createproduct(userId, createproductdto);
     }
-
-    
+  
     @Get('all')
     getproducts() {
         return this.productservice.getallproducts()
     }
-
    
     @Get('productby/:id')
     getproductbyid(@Param('id') id: string) {
