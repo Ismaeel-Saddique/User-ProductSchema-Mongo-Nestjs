@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import { UpdateUserDto } from 'src/dto/updateuser.dto';
 import { JwtGuard } from 'src/guards/authguard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { LoginDto } from 'src/dto/login.dto';
+import { VerifyOtpAndResetPasswordDto } from 'src/dto/ResetPassword.dto';
 
 @Controller('user')
 export class UserController {
@@ -15,9 +17,25 @@ export class UserController {
         return this.userservice.signupuser(createuserdto)
     }
 
+    @Post('verify-otp')
+    async verifyOtp(@Body() body: { email: string; otp: string }): Promise<string> {
+        const { email, otp } = body;
+        return await this.userservice.verifyOtp(email, otp);
+    }
+
     @Post('login')
-    loginUser(@Body(new ValidationPipe()) createuserdto: CreateUserDto) {
-        return this.userservice.login(createuserdto)
+    loginUser(@Body(new ValidationPipe()) Logindto: LoginDto) {
+        return this.userservice.login(Logindto)
+    }
+
+    @Post('forgot-password')
+    async forgetpassword(@Body('identifier') identifier: string) {
+        return await this.userservice.forgotPassword(identifier);
+    }
+    
+    @Post('reset-password')
+    async resetPassword( @Body() resetPasswordDto: VerifyOtpAndResetPasswordDto){
+        return await this.userservice.verifyOtpAndResetPassword(resetPasswordDto);
     }
 
     @Post('refresh/:id')
@@ -46,7 +64,7 @@ export class UserController {
     @UseGuards(JwtGuard)
     @Get("allusers")
     async displayusers() {
-        return await this.userservice.getuser(); // This should simply return all users
+        return await this.userservice.getuser(); 
     }
 
     @ApiBearerAuth('JWT-auth')

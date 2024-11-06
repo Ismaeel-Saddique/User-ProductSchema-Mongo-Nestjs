@@ -6,6 +6,8 @@ import { UserModule } from './api/user/user.module';
 import { PassportModules } from './passport/passport.module';
 import { ProductModule } from './api/product/product.module';
 import { SchemaModule } from './schemas/schema.module';
+import { MailServiceModule } from './api/mail/mail-service.module';
+import { MailService } from './api/mail/mail-service.service';
 
 @Module({
   imports: [
@@ -13,9 +15,10 @@ import { SchemaModule } from './schemas/schema.module';
     UserModule,
     PassportModules,
     ProductModule,
-    SchemaModule
+    SchemaModule,
+    MailServiceModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MailService],
 })
 export class AppModule {}

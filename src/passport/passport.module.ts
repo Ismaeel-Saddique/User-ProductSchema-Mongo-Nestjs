@@ -5,6 +5,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/api/user/user.module';
 import { UserService } from 'src/api/user/user.service';
 import { SchemaModule } from 'src/schemas/schema.module';
+import { MailServiceModule } from 'src/api/mail/mail-service.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { SchemaModule } from 'src/schemas/schema.module';
       signOptions: { expiresIn: '1d' },  
     }),
     forwardRef(() => UserModule), 
-    SchemaModule
+    SchemaModule, 
+    MailServiceModule
    ],
   providers: [JwtStrategy, UserService],
   exports: [ JwtModule, PassportModule]
